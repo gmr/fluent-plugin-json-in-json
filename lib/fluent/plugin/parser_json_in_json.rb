@@ -2,13 +2,23 @@ require 'yajl'
 
 module Fluent
   class TextParser
-    class JSONInJSONParser < JSONParser
+    class JSONInJSONParser < Parser
+      Fluent::Plugin.register_parser('json_in_json', self)
+
+      config_param :time_key, :string, :default => 'time'
+      config_param :time_format, :string, :default => nil
+
+      def configure(conf)
+        super
+
+        unless @time_format.nil?
+          @time_parser = TimeParser.new(@time_format)
+          @mutex = Mutex.new
+        end
+      end
+
       def parse(text)
         record = Yajl.load(text)
-
-        record.each do |key, value|
-          record[key] = Yajl.load(value)
-        end
 
         value = @keep_time_key ? record[@time_key] : record.delete(@time_key)
         if value
@@ -28,6 +38,18 @@ module Fluent
             time = nil
           end
         end
+
+        values = Hash.new
+        record.each do |k, v|
+          if v[0] == '{'
+            deserialized = Yajl.load(v)
+            if deserialized.is_a?(Hash)
+              values.merge!(deserialized)
+              record.delete k
+            end
+          end
+        end
+        record.merge!(values)
 
         if block_given?
           yield time, record
