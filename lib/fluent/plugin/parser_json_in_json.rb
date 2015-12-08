@@ -7,6 +7,7 @@ module Fluent
 
       config_param :time_key, :string, :default => 'time'
       config_param :time_format, :string, :default => nil
+      config_param :key, :string, :default => nil
 
       def configure(conf)
         super
@@ -41,11 +42,13 @@ module Fluent
 
         values = Hash.new
         record.each do |k, v|
-          if v[0] == '{'
-            deserialized = Yajl.load(v)
-            if deserialized.is_a?(Hash)
-              values.merge!(deserialized)
-              record.delete k
+          if @key && k == @key
+            if v[0] == '{'
+              deserialized = Yajl.load(v)
+              if deserialized.is_a?(Hash)
+                values.merge!(deserialized)
+                record.delete k
+              end
             end
           end
         end
