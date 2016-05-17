@@ -1,5 +1,7 @@
 # fluent-plugon-json-in-json
 
+:boom:**Important**:boom: This project is deprecated and no longer maintained. If you'd like to take it over, please contact me.
+
 This fluentd parser plugin parses JSON log lines with nested JSON strings. For
 example, given a docker log of ``{"log": "{\"foo\": \"bar\"}"}``, the log record
 will be parsed into ``{:log => { :foo => "bar" }}``.
