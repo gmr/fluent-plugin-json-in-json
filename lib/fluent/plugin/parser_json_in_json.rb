@@ -1,6 +1,7 @@
 require 'yajl'
+require 'fluent/plugin/parser'
 
-module Fluent
+module Fluent::Plugin
   class TextParser
     class JSONInJSONParser < Parser
       Fluent::Plugin.register_parser('json_in_json', self)
@@ -12,7 +13,7 @@ module Fluent
         super
 
         unless @time_format.nil?
-          @time_parser = TimeParser.new(@time_format)
+          @time_parser = Fluent::TimeParser.new(@time_format)
           @mutex = Mutex.new
         end
       end
@@ -33,7 +34,7 @@ module Fluent
           end
         else
           if @estimate_current_event
-            time = Engine.now
+            time = Fluent::Engine.now
           else
             time = nil
           end
