@@ -1,7 +1,7 @@
 # coding: utf-8
 Gem::Specification.new do |spec|
   spec.name          = "fluent-plugin-json-in-json"
-  spec.version       = "0.1.4"
+  spec.version       = "0.2.0"
   spec.authors       = ["Gavin M. Roy"]
   spec.email         = ["gavinmroy@gmail.com"]
   spec.description   = %q{Parser plugin that parses JSON attributes with JSON strings in them}
@@ -15,6 +15,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "yajl-ruby", "~> 1.0"
+  spec.add_runtime_dependency "fluentd", ['>= 0.14.0', '< 2']
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end
